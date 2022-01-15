@@ -1,3 +1,5 @@
+using System;
+
 namespace SmartSchool.WEBAPI.Models
 {
     public class AlunoDisciplina
@@ -12,5 +14,6 @@ namespace SmartSchool.WEBAPI.Models
         public Aluno Aluno { get; set; }
         public int DisciplinaId { get; set; }
         public Disciplina Disciplina { get; set; }
-    }
+        public DateTime DataIni { get; set; } = DateTime.Now;
+        public DateTime? DataFim { get; set; }    }
 }
