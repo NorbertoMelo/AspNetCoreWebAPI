@@ -15,5 +15,7 @@ namespace SmartSchool.WEBAPI.Models
         public int DisciplinaId { get; set; }
         public Disciplina Disciplina { get; set; }
         public DateTime DataIni { get; set; } = DateTime.Now;
-        public DateTime? DataFim { get; set; }    }
+        public DateTime? DataFim { get; set; }    
+        public int? Nota { get; set; } = null;
+    }
 }
