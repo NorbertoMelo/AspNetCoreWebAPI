@@ -1,14 +1,16 @@
 using System;
 
-namespace SmartSchool.WEBAPI.Dtos
+namespace SmartSchool.WEBAPI.V1.Dtos
 {
-    public class AlunoDto
+    /// <summary>
+    /// Defini��o da Classe de transfer�ncia de Dados do Objeto Professor
+    /// </summary>    
+    public class ProfessorDto
     {
         public int Id { get; set; }
-        public int Matricula { get; set; }
+        public int Registro { get; set; }
         public string Nome { get; set; }
         public string Telefone { get; set; }
-        public int Idade { get; set; }
         public DateTime DataIni { get; set; }
         public bool Ativo { get; set; }
     }

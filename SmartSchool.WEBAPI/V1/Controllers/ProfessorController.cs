@@ -2,13 +2,17 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using SmartSchool.WEBAPI.Data;
-using SmartSchool.WEBAPI.Dtos;
 using SmartSchool.WEBAPI.Models;
+using SmartSchool.WEBAPI.V1.Dtos;
 
-namespace SmartSchool.WEBAPI.Controllers
+namespace SmartSchool.WEBAPI.V1.Controllers
 {
-    [Route("api/[controller]")]
+    /// <summary>
+    /// Versão 1 do controlador de Professores
+    /// </summary>
     [ApiController]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:ApiVersion}/[controller]")]
     public class ProfessorController : ControllerBase
     {
         private readonly IRepository _repo;

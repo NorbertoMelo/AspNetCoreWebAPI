@@ -2,20 +2,29 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using SmartSchool.WEBAPI.Data;
-using SmartSchool.WEBAPI.Dtos;
 using SmartSchool.WEBAPI.Models;
+using SmartSchool.WEBAPI.V2.Dtos;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace SmartSchool.WEBAPI.Controllers
+namespace SmartSchool.WEBAPI.V2.Controllers
 {
-    [Route("api/[controller]")]
+    /// <summary>
+    /// Versão 2 do controlador de Alunos
+    /// </summary>
     [ApiController]
+    [ApiVersion("2.0")]
+    [Route("api/v{version:ApiVersion}/[controller]")]
     public class AlunoController : ControllerBase
     {
         private readonly IRepository _repo;
         private readonly IMapper _mapper;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="repo"></param>
+        /// <param name="mapper"></param>
         public AlunoController(IRepository repo, IMapper mapper)
         {
             _repo = repo;
@@ -23,6 +32,10 @@ namespace SmartSchool.WEBAPI.Controllers
         }
 
         // GET: api/<AlunoController>
+        /// <summary>
+        /// Método responsável para retornar todos os meus alunos
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Get()
         {
@@ -32,6 +45,11 @@ namespace SmartSchool.WEBAPI.Controllers
         }
 
         // GET api/<AlunoController>/5
+        /// <summary>
+        /// Método responsável pela consulta de aluno através do Id.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id:int}")]
         public IActionResult GetById(int id)
         {
@@ -42,14 +60,7 @@ namespace SmartSchool.WEBAPI.Controllers
 
             return Ok(alunoDto);
         }        
-        
-        // GET api/<AlunoController>/NewRegister
-        [HttpGet("getRegister")]
-        public IActionResult GetRegister()
-        {
-            return Ok(new AlunoRegistrarDto());
-        }
-        
+               
         // GET api/<AlunoController>/Marta
         [HttpGet("{nome}")]
         public IActionResult GetByName(string nome)
@@ -105,23 +116,6 @@ namespace SmartSchool.WEBAPI.Controllers
             return BadRequest("Aluno não Atualizado");
         }        
         
-        // PATCH api/<AlunoController>/5
-        [HttpPatch("{id}")]
-        public IActionResult Patch(int id, AlunoRegistrarDto model)
-        {
-            var aluno = _repo.GetAlunoById(id);
-            if (aluno == null) return BadRequest("O aluno não foi encontrado");
-
-            _mapper.Map(model,aluno);
-
-            _repo.Update(aluno);
-            if (_repo.SaveChanges())
-            {
-                return Created($"/api/aluno/{model.Id}",_mapper.Map<AlunoDto>(aluno));
-            }
-            return BadRequest("Aluno não Atualizado");
-        }
-
         // DELETE api/<AlunoController>/5
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
