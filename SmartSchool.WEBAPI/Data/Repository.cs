@@ -1,5 +1,8 @@
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using SmartSchool.WEBAPI.Helpers;
 using SmartSchool.WEBAPI.Models;
 
 namespace SmartSchool.WEBAPI.Data
@@ -31,6 +34,44 @@ namespace SmartSchool.WEBAPI.Data
         public bool SaveChanges()
         {
             return _context.SaveChanges() > 0;
+        }
+
+        async Task<PageList<Aluno>> IRepository.GetAllAlunosAsync(PageParams pageParams,bool includeProfessor)
+        {
+            IQueryable<Aluno> query = _context.Alunos;
+
+            if (includeProfessor)
+            {
+                query = query.Include(a => a.AlunosDisciplinas)
+                            .ThenInclude(ad => ad.Disciplina)
+                            .ThenInclude(d => d.Professor);
+            }
+
+            query = query.AsNoTracking().OrderBy(a => a.Id);
+
+            if (!string.IsNullOrEmpty(pageParams.Nome))
+                query = query.Where(
+                                aluno => aluno.Nome
+                                              .ToUpper()
+                                              .Contains(pageParams.Nome.ToUpper()) ||
+                                aluno.SobreNome
+                                              .ToUpper()
+                                              .Contains(pageParams.Nome.ToUpper())
+                                );
+            if (pageParams.Matricula > 0)
+                query = query.Where(aluno => aluno.Matricula == pageParams.Matricula);
+            
+            if (!string.IsNullOrEmpty(pageParams.Ativo))
+            {
+                if (pageParams.Ativo == "1" || pageParams.Ativo.ToUpper() == "TRUE" || pageParams.Ativo.ToUpper() == "VERDADEIRO")
+                    query = query.Where(aluno => aluno.Ativo == true);
+
+                if (pageParams.Ativo == "0" || pageParams.Ativo.ToUpper() == "FALSE" || pageParams.Ativo.ToUpper() == "FALSO")
+                    query = query.Where(aluno => aluno.Ativo == false);
+            }
+
+            // return await query.ToListAsync();
+            return await PageList<Aluno>.CreateAsync(query, pageParams.PageNumber, pageParams.PageSize);
         }
 
         Aluno[] IRepository.GetAllAlunos(bool includeProfessor)
@@ -133,5 +174,6 @@ namespace SmartSchool.WEBAPI.Data
                         .Where(professor => professor.Nome == nome);
             return query.FirstOrDefault();            
         }
+
     }
 }
